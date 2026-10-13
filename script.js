@@ -320,8 +320,10 @@ projectCards.forEach(card => {
         openModal(projectModal);
     });
     
-    // 3D Tilt Hover Effect (Disabled if reduced motion is preferred)
+    // 3D Tilt Hover Effect & Glare (Disabled if reduced motion is preferred)
     if (!reducedMotion) {
+        const glare = card.querySelector('.project-card-glare');
+        
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -329,20 +331,34 @@ projectCards.forEach(card => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            const rotateX = ((y - centerY) / centerY) * -5; // Max 5 degrees
-            const rotateY = ((x - centerX) / centerX) * 5;
+            // Refined tilt angle (max 10 degrees)
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
             
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
             card.style.transition = 'none'; // Instant follow on move
+            
+            // Dynamic glare movement
+            if (glare) {
+                const glareX = (x / rect.width) * 100;
+                const glareY = (y / rect.height) * 100;
+                glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 70%)`;
+                glare.style.opacity = '1';
+            }
         });
         
         card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
-            card.style.transition = 'transform 0.5s ease'; // Smooth reset
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            card.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)'; // Smooth organic reset
+            if (glare) {
+                glare.style.opacity = '0';
+                glare.style.transition = 'opacity 0.5s ease';
+            }
         });
         
         card.addEventListener('mouseenter', () => {
-            card.style.transition = 'transform 0.1s ease'; // Smooth entry
+            card.style.transition = 'transform 0.15s ease-out';
+            if (glare) glare.style.transition = 'none';
         });
     }
 });
@@ -392,4 +408,384 @@ if (hamburger && navLinks) {
             document.body.classList.remove('modal-open');
         });
     });
+}
+
+// ====================================================
+// Web Audio API Sound Effects (Awwwards Style SFX)
+// ====================================================
+let audioCtx = null;
+let soundEnabled = false;
+
+function initAudio() {
+    if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+        }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+// Subtle high-tech hover tick
+function playHoverSound() {
+    if (!soundEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(820, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.04);
+
+        gain.gain.setValueAtTime(0.018, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.04);
+    } catch (e) {
+        // Ignore audio interruptions
+    }
+}
+
+// Soft low-latency click pop
+function playClickSound() {
+    if (!soundEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(160, audioCtx.currentTime + 0.08);
+
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+    } catch (e) {
+        // Ignore audio interruptions
+    }
+}
+
+// Modal open chime sound
+function playChimeSound() {
+    if (!soundEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+
+    try {
+        [523.25, 659.25, 783.99].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.05);
+
+            gain.gain.setValueAtTime(0.025, audioCtx.currentTime + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.05 + 0.25);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(audioCtx.currentTime + idx * 0.05);
+            osc.stop(audioCtx.currentTime + idx * 0.05 + 0.25);
+        });
+    } catch (e) {}
+}
+
+// Sound toggle setup
+const soundToggleBtn = document.getElementById('sound-toggle');
+if (soundToggleBtn) {
+    const soundStatus = soundToggleBtn.querySelector('.sound-status');
+
+    soundToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        initAudio();
+        soundEnabled = !soundEnabled;
+
+        if (soundEnabled) {
+            soundToggleBtn.classList.add('active');
+            if (soundStatus) soundStatus.textContent = 'SFX ON';
+            playChimeSound();
+        } else {
+            soundToggleBtn.classList.remove('active');
+            if (soundStatus) soundStatus.textContent = 'SFX OFF';
+        }
+    });
+}
+
+// Attach sound triggers to interactive elements
+const interactiveSoundTargets = 'a, button, .project-card, .logo-item, input, textarea';
+document.addEventListener('mouseover', (e) => {
+    if (e.target.closest(interactiveSoundTargets)) {
+        playHoverSound();
+    }
+});
+
+document.addEventListener('click', (e) => {
+    if (e.target.closest(interactiveSoundTargets)) {
+        playClickSound();
+    }
+});
+
+// ====================================================
+// Custom Animated Glow Dot & Magnetic Cursor
+// ====================================================
+const cursorDot = document.getElementById('cursor-dot');
+const cursorOutline = document.getElementById('cursor-outline');
+
+if (cursorDot && cursorOutline && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let outlineX = mouseX;
+    let outlineY = mouseY;
+    let dotX = mouseX;
+    let dotY = mouseY;
+    let isCursorVisible = false;
+    let targetMagnetic = null;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        if (!isCursorVisible) {
+            cursorDot.style.opacity = '1';
+            cursorOutline.style.opacity = '1';
+            isCursorVisible = true;
+        }
+
+        // Check if cursor is near a magnetic target
+        const magneticEl = e.target.closest('.btn-primary, .sound-toggle-btn, .hamburger, .close-btn');
+        if (magneticEl) {
+            targetMagnetic = magneticEl;
+            document.body.classList.add('cursor-magnetic');
+        } else {
+            targetMagnetic = null;
+            document.body.classList.remove('cursor-magnetic');
+        }
+
+        // Generic hover state for interactive elements
+        const hoverEl = e.target.closest('a, button, .project-card, input, textarea, .logo');
+        if (hoverEl) {
+            document.body.classList.add('cursor-hover');
+        } else {
+            document.body.classList.remove('cursor-hover');
+        }
+    });
+
+    document.addEventListener('mousedown', () => {
+        document.body.classList.add('cursor-clicking');
+    });
+
+    document.addEventListener('mouseup', () => {
+        document.body.classList.remove('cursor-clicking');
+    });
+
+    document.addEventListener('mouseleave', () => {
+        cursorDot.style.opacity = '0';
+        cursorOutline.style.opacity = '0';
+        isCursorVisible = false;
+    });
+
+    // Smooth animation loop using requestAnimationFrame
+    function renderCursor() {
+        // Immediate dot tracking
+        dotX += (mouseX - dotX) * 0.75;
+        dotY += (mouseY - dotY) * 0.75;
+        cursorDot.style.left = `${dotX}px`;
+        cursorDot.style.top = `${dotY}px`;
+
+        // Smooth outline tracking with magnetic attraction
+        let targetX = mouseX;
+        let targetY = mouseY;
+
+        if (targetMagnetic) {
+            const rect = targetMagnetic.getBoundingClientRect();
+            const elemCenterX = rect.left + rect.width / 2;
+            const elemCenterY = rect.top + rect.height / 2;
+            
+            // Magnetic pull: lerp towards element center
+            targetX = elemCenterX + (mouseX - elemCenterX) * 0.25;
+            targetY = elemCenterY + (mouseY - elemCenterY) * 0.25;
+
+            // Apply slight magnetic pull to the button itself
+            const pullX = (mouseX - elemCenterX) * 0.18;
+            const pullY = (mouseY - elemCenterY) * 0.18;
+            targetMagnetic.style.transform = `translate(${pullX.toFixed(2)}px, ${pullY.toFixed(2)}px)`;
+        }
+
+        outlineX += (targetX - outlineX) * 0.18;
+        outlineY += (targetY - outlineY) * 0.18;
+
+        cursorOutline.style.left = `${outlineX}px`;
+        cursorOutline.style.top = `${outlineY}px`;
+
+        requestAnimationFrame(renderCursor);
+    }
+    requestAnimationFrame(renderCursor);
+
+    // Reset button translation on mouseout
+    document.addEventListener('mouseout', (e) => {
+        const magneticEl = e.target.closest('.btn-primary, .sound-toggle-btn, .hamburger, .close-btn');
+        if (magneticEl) {
+            magneticEl.style.transform = '';
+        }
+    });
+}
+
+// ====================================================
+// SCROLL PROGRESS INDICATOR
+// ====================================================
+const scrollProgressBar = document.getElementById('scroll-progress');
+if (scrollProgressBar) {
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        scrollProgressBar.style.width = `${progress}%`;
+    }, { passive: true });
+}
+
+// ====================================================
+// BACK TO TOP BUTTON
+// ====================================================
+const backToTopBtn = document.getElementById('back-to-top');
+if (backToTopBtn) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+    }, { passive: true });
+
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+
+// ====================================================
+// TYPEWRITER ANIMATION
+// ====================================================
+const typewriterEl = document.getElementById('typewriter');
+if (typewriterEl) {
+    const roles = [
+        'Full-Stack Developer',
+        'AI/ML Engineer',
+        'Creative Technologist',
+        'Computer Vision Builder',
+        '3D WebGL Creator'
+    ];
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeWriter() {
+        const currentRole = roles[roleIndex];
+        const displayText = isDeleting
+            ? currentRole.substring(0, charIndex - 1)
+            : currentRole.substring(0, charIndex + 1);
+
+        typewriterEl.textContent = displayText;
+
+        if (isDeleting) {
+            charIndex--;
+        } else {
+            charIndex++;
+        }
+
+        let delay = isDeleting ? 50 : 100;
+
+        if (!isDeleting && charIndex === currentRole.length) {
+            delay = 2000;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+            delay = 400;
+        }
+
+        setTimeout(typeWriter, delay);
+    }
+    setTimeout(typeWriter, 1500);
+}
+
+// ====================================================
+// STATS COUNTER ANIMATION
+// ====================================================
+function animateCounter(el, target, duration) {
+    duration = duration || 1800;
+    var step = function(timestamp) {
+        if (!step.startTime) step.startTime = timestamp;
+        var progress = Math.min((timestamp - step.startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+    };
+    requestAnimationFrame(step);
+}
+
+var statItems = document.querySelectorAll('.stat-item');
+if (statItems.length > 0 && 'IntersectionObserver' in window) {
+    var statsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+                var target = parseInt(el.getAttribute('data-target'), 10);
+                var numEl = el.querySelector('.stat-number');
+                if (numEl) animateCounter(numEl, target);
+                statsObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+    statItems.forEach(function(item) { statsObserver.observe(item); });
+}
+
+// ====================================================
+// GSAP SCROLL ANIMATIONS FOR NEW SECTIONS
+// ====================================================
+if (!prefersReducedMotion) {
+    gsap.from('.stat-item', {
+        scrollTrigger: { trigger: '.stats-section', start: 'top 80%' },
+        y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out'
+    });
+
+    gsap.from('.cert-card', {
+        scrollTrigger: { trigger: '.certs-section', start: 'top 80%' },
+        y: 50, opacity: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out'
+    });
+
+    gsap.from('.timeline-item', {
+        scrollTrigger: { trigger: '.timeline-section', start: 'top 80%' },
+        y: 40, opacity: 0, duration: 0.9, stagger: 0.2, ease: 'power3.out'
+    });
+}
+
+
+// ====================================================
+// PAGE TRANSITION CINEMATIC ENTRANCE
+// ====================================================
+var pageTransition = document.getElementById('page-transition');
+if (pageTransition && !prefersReducedMotion) {
+    gsap.fromTo(pageTransition,
+        { scaleY: 1, transformOrigin: 'top' },
+        { scaleY: 0, duration: 0.8, ease: 'power4.inOut', delay: 0.1 }
+    );
 }

@@ -10,10 +10,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body>
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress" class="scroll-progress-bar"></div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor-dot" id="cursor-dot"></div>
+    <div class="custom-cursor-outline" id="cursor-outline"></div>
+
+    <!-- Page Transition Overlay -->
+    <div id="page-transition" class="page-transition"></div>
+
     <!-- Preloader -->
     <div id="preloader" class="preloader">
         <div class="preloader-content">
@@ -43,6 +53,15 @@
                 <a href="#" class="contact-trigger">Contact</a>
             </div>
             <div class="nav-right">
+                <!-- Sound Toggle Button -->
+                <button id="sound-toggle" class="sound-toggle-btn" aria-label="Toggle Sound Effects" title="Toggle Sound">
+                    <span class="sound-waves">
+                        <span class="wave-bar"></span>
+                        <span class="wave-bar"></span>
+                        <span class="wave-bar"></span>
+                    </span>
+                    <span class="sound-status">SFX OFF</span>
+                </button>
                 <a href="#" class="btn-primary contact-trigger desktop-only">Start a Project <span>↗</span></a>
                 <div class="hamburger" id="hamburger">
                     <span></span>
@@ -64,7 +83,7 @@
             <div class="hero-bottom">
                 <div class="hero-bottom-left">
                     <p class="trusted-tag">✦ AI/ML Engineering Student</p>
-                    <h2 class="hero-subtitle">Engineering<br>Intelligent Systems</h2>
+                    <h2 class="hero-subtitle">I am a<br><span id="typewriter" class="typewriter-text"></span><span class="typewriter-cursor">|</span></h2>
                     <div class="hero-actions">
                         <a href="#" class="btn-primary contact-trigger">Get In Touch <span>↗</span></a>
                         <a href="#projects" class="btn-text">View Projects <span>↘</span></a>
@@ -125,6 +144,28 @@
             </div>
         </section>
 
+        <!-- Stats Counter Section -->
+        <section class="stats-section" id="stats">
+            <div class="stats-grid">
+                <div class="stat-item" data-target="4">
+                    <span class="stat-number">0</span><span class="stat-plus">+</span>
+                    <p class="stat-label">Projects Built</p>
+                </div>
+                <div class="stat-item" data-target="2">
+                    <span class="stat-number">0</span><span class="stat-plus">+</span>
+                    <p class="stat-label">Years of Experience</p>
+                </div>
+                <div class="stat-item" data-target="10">
+                    <span class="stat-number">0</span><span class="stat-plus">+</span>
+                    <p class="stat-label">Technologies Mastered</p>
+                </div>
+                <div class="stat-item" data-target="5">
+                    <span class="stat-number">0</span><span class="stat-plus">+</span>
+                    <p class="stat-label">Certifications Earned</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Tech Stack -->
         <section class="client-logos">
             <div class="logo-item">Python</div>
@@ -149,6 +190,7 @@
                 <div class="project-card" data-project-index="0">
                     <div class="project-image-wrapper">
                         <img src="assets/project1-placeholder.jpg" alt="TextForge3D">
+                        <div class="project-card-glare"></div>
                     </div>
                     <h3>TextForge3D</h3>
                     <p>A premium AI-powered platform transforming natural-language prompts into playable 3D worlds.</p>
@@ -158,6 +200,7 @@
                 <div class="project-card staggered" data-project-index="1">
                     <div class="project-image-wrapper">
                         <img src="assets/project2-placeholder.jpg" alt="Horizon">
+                        <div class="project-card-glare"></div>
                     </div>
                     <h3>Horizon</h3>
                     <p>A real-time planetary health and local environmental impact dashboard.</p>
@@ -167,6 +210,7 @@
                 <div class="project-card" data-project-index="2">
                     <div class="project-image-wrapper">
                         <img src="assets/project3-placeholder.jpg" alt="VisionVox">
+                        <div class="project-card-glare"></div>
                     </div>
                     <h3>VisionVox</h3>
                     <p>An AI-based assistive navigation and gesture-to-voice system.</p>
@@ -176,6 +220,7 @@
                 <div class="project-card staggered" data-project-index="3">
                     <div class="project-image-wrapper">
                         <img src="assets/project4-placeholder.jpg" alt="Easy Vision">
+                        <div class="project-card-glare"></div>
                     </div>
                     <h3>Easy Vision</h3>
                     <p>Assistive communication using computer vision and hand gestures to translate to text and audio.
@@ -185,6 +230,135 @@
             </div>
         </section>
 
+        <!-- Certifications Section -->
+        <section class="certs-section" id="certifications">
+            <div class="section-header">
+                <span class="red-dot"></span> Certifications & Badges
+            </div>
+            <h2 class="section-title">Recognized Expertise</h2>
+            <div class="certs-grid">
+                <div class="cert-card">
+                    <div class="cert-front">
+                        <div class="cert-icon">🤖</div>
+                        <h3>Machine Learning Specialization</h3>
+                        <p>DeepLearning.AI</p>
+                    </div>
+                    <div class="cert-back">
+                        <p>Neural Networks, Supervised & Unsupervised Learning, Reinforcement Learning</p>
+                        <span class="cert-badge">Coursera</span>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-front">
+                        <div class="cert-icon">👁️</div>
+                        <h3>Computer Vision Fundamentals</h3>
+                        <p>OpenCV University</p>
+                    </div>
+                    <div class="cert-back">
+                        <p>Image Processing, Object Detection, MediaPipe, Real-time CV pipelines</p>
+                        <span class="cert-badge">OpenCV</span>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-front">
+                        <div class="cert-icon">🌐</div>
+                        <h3>Full-Stack Web Development</h3>
+                        <p>Udemy / Self-taught</p>
+                    </div>
+                    <div class="cert-back">
+                        <p>React, Next.js, Node.js, REST APIs, Databases, Deployment</p>
+                        <span class="cert-badge">Udemy</span>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-front">
+                        <div class="cert-icon">🧠</div>
+                        <h3>Deep Learning with TensorFlow</h3>
+                        <p>Google Developers</p>
+                    </div>
+                    <div class="cert-back">
+                        <p>CNNs, RNNs, Transfer Learning, Model Optimization, TFLite</p>
+                        <span class="cert-badge">Google</span>
+                    </div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-front">
+                        <div class="cert-icon">📦</div>
+                        <h3>3D Graphics with Three.js</h3>
+                        <p>Three.js Journey</p>
+                    </div>
+                    <div class="cert-back">
+                        <p>WebGL, Shaders, GLSL, 3D Scenes, Physics, Post-processing Effects</p>
+                        <span class="cert-badge">Three.js</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline Section -->
+        <section class="timeline-section" id="timeline">
+            <div class="section-header">
+                <span class="red-dot"></span> My Journey
+            </div>
+            <h2 class="section-title">Experience & Education</h2>
+            <div class="timeline">
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2022 — Present</span>
+                        <h3>B.E. in AI & ML Engineering</h3>
+                        <p>Lokmanya Tilak College of Engineering, Mumbai</p>
+                        <div class="timeline-tags">
+                            <span class="tag">Deep Learning</span>
+                            <span class="tag">Computer Vision</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2024</span>
+                        <h3>TextForge3D — Lead Developer</h3>
+                        <p>Built a generative AI platform converting text to interactive 3D worlds with Three.js and custom LLM pipelines.</p>
+                        <div class="timeline-tags">
+                            <span class="tag">Three.js</span>
+                            <span class="tag">Generative AI</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023</span>
+                        <h3>VisionVox & Easy Vision</h3>
+                        <p>Developed assistive AI systems using OpenCV and MediaPipe for gesture-to-voice and navigation for visually impaired users.</p>
+                        <div class="timeline-tags">
+                            <span class="tag">OpenCV</span>
+                            <span class="tag">MediaPipe</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023</span>
+                        <h3>Horizon — EcoSentinel Dashboard</h3>
+                        <p>Real-time planetary health data platform with interactive data visualizations and environmental insights.</p>
+                        <div class="timeline-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">D3.js</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2022</span>
+                        <h3>Started Coding Journey</h3>
+                        <p>Began with Python and machine learning fundamentals, quickly progressing into full-stack development and AI systems.</p>
+                        <div class="timeline-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">ML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Creative Footer -->
         <footer class="creative-footer">
@@ -242,6 +416,28 @@
             </div>
         </footer>
     </main>
+
+    <!-- Floating Social Sidebar -->
+    <div class="social-sidebar" id="social-sidebar">
+        <a href="mailto:h.khanvilkar2018@gmail.com" class="social-link" title="Email" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </a>
+        <a href="https://github.com/Harshk11179" class="social-link" title="GitHub" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/harsh-rupesh-khanvilkar-873399331" class="social-link" title="LinkedIn" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/_harshk11" class="social-link" title="Instagram" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+        <div class="sidebar-line"></div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top-btn" aria-label="Back to top" title="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
 
     <!-- Contact Modal -->
     <div id="contact-modal" class="modal-overlay">
@@ -301,7 +497,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 
 </html>
